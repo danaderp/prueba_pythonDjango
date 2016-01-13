@@ -26,16 +26,26 @@
 							<li>
 								<a href="#" class="icon fa-angle-down">CRUD</a>
 								<ul>
-									<li><a href="{% url 'compras:clientes' %}">Clientes</a></li>
-									<li><a href="{% url 'compras:productos' %}">Productos</a></li>
-									<li><a href="{% url 'compras:sedes' %}">Sedes</a></li>
+									<li><a href="#">Clientes</a></li>
 									<li>
-										<a href="#">Submenu</a>
+										<a href="#">Productos</a>
 										<ul>
-											<li><a href="#">Option One</a></li>
-											<li><a href="#">Option Two</a></li>
-											<li><a href="#">Option Three</a></li>
-											<li><a href="#">Option Four</a></li>
+											<li><a href="{% url 'compras:buscar_producto' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_producto' %}">Agregar</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Sedes</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_sede' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_sede' %}">Agregar</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Clientes</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_cliente' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_cliente' %}">Agregar</a></li>
 										</ul>
 									</li>
 								</ul>
@@ -50,7 +60,7 @@
 					<h2>Sistema de Compras</h2>
 					<p>Elija alguna de las dos opciones.</p>
 					<ul class="actions">
-						<li><a href="#" class="button special">Comprar</a></li>
+						<li><a href="{% url 'compras:compras' %}" class="button special">Comprar</a></li>
 						<li><a href="#" class="button">Consultar Factura</a></li>
 					</ul>
 				</section>

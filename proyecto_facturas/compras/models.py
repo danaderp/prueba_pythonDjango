@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
 
+from django.forms import ModelForm
 from django.db import models
 
 
@@ -88,6 +89,13 @@ class Clientes(models.Model):
         managed = False
         db_table = 'clientes'
 
+#Creando el form class para clientes
+#class ClienteForm(ModelForm):
+    #nombres = MyFormField(max_length=80, required=False, 
+    #                      help_text="Nombre del Cliente")
+ #   class Meta:
+ #       model = Clientes
+ #       fields = ['documento','nombres','detalles']
 
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
