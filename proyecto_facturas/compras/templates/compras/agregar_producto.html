@@ -57,8 +57,8 @@
 			<!-- Main -->
 				<section id="main" class="container">
 					<header>
-						<h2>Buscar Producto</h2>
-						<p>Por favor busque su producto por el nombre o la descripción.</p>
+						<h2>Agregar Productos</h2>
+						<p>Por favor agregue su producto en los correspondietes campos.</p>
 					</header>
 					<div class="row">
 						<div class="12u">
@@ -93,35 +93,17 @@
 
 							<!-- Form -->
 								<section class="box">
-									<h3>Mis Productos (búsqueda)</h3>								
+									<h3>Mi Producto (agregar)</h3>								
 									<hr />
-									<form action="." method="GET">
-									<div class="row uniform 50%">
-										
-										    <div class="9u 12u(mobilep)">
-										    	<input type="text" name="q" value="{{ query|escape }}">
-										    </div>
-										    <div class="3u 12u(mobilep)">
-										    	<input type="submit" value="Search">
-										    </div>
-								  	</div>
+									<form action="." method="POST">
+									{% csrf_token %}
+									<div class="table-wrapper">
+										<table> {{ form }} </table>
+									</div>
+								  	<div class="3u 12u(mobilep)">
+										<p><input type="submit" value="Submit"></p>
+								    </div>
 								  	</form>
-									<hr />
-									  {% if query %}
-									    <h3>Resultados para"{{ query|escape }}":</h3>
-									    {% if results %}
-									      <div class="6u 12u(mobilep)">
-										      <ul>
-										      {% for producto in results %}
-										        <li>{{ producto|escape }}</li>
-										      {% endfor %}
-										      </ul>
-									      </div>
-									    {% else %}
-									      <p>No hay productos encontrados</p>
-									    {% endif %}
-									  {% endif %}
-
 								</section>
 						</div>
 					</div>

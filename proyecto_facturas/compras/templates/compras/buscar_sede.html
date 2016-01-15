@@ -18,7 +18,7 @@
 		<div id="page-wrapper">
 
 			<!-- Header -->
-			<header id="header" class="alt">
+				<header id="header" class="alt">
 					<h1><a href="{% url 'compras:index' %}">Prueba Python</a> by David A. Nader</h1>
 					<nav id="nav">
 						<ul>
@@ -26,14 +26,25 @@
 							<li>
 								<a href="#" class="icon fa-angle-down">CRUD</a>
 								<ul>
-									<li><a href="#">Clientes</a></li>
-									<li><a href="{% url 'compras:productos' %}">Productos</a></li>
-									<li><a href="{% url 'compras:sedes' %}">Sedes</a></li>
+									<li>
+										<a href="#">Productos</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_producto' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_producto' %}">Agregar</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Sedes</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_sede' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_sede' %}">Agregar</a></li>
+										</ul>
+									</li>
 									<li>
 										<a href="#">Clientes</a>
 										<ul>
 											<li><a href="{% url 'compras:buscar_cliente' %}">Buscar</a></li>
-											<li><a href="#">Agregar</a></li>
+											<li><a href="{% url 'compras:agregar_cliente' %}">Agregar</a></li>
 										</ul>
 									</li>
 								</ul>
@@ -46,8 +57,8 @@
 			<!-- Main -->
 				<section id="main" class="container">
 					<header>
-						<h2>Buscar Clientes</h2>
-						<p>Por favor busque su cliente por el nombre o el documento de identidad.</p>
+						<h2>Buscar Sedes</h2>
+						<p>Por favor busque su sede por el nombre o la dirección.</p>
 					</header>
 					<div class="row">
 						<div class="12u">
@@ -82,7 +93,7 @@
 
 							<!-- Form -->
 								<section class="box">
-									<h3>Mis Clientes (búsqueda)</h3>								
+									<h3>Mis Sedes (búsqueda)</h3>								
 									<hr />
 									<form action="." method="GET">
 									<div class="row uniform 50%">
@@ -101,13 +112,13 @@
 									    {% if results %}
 									      <div class="6u 12u(mobilep)">
 										      <ul>
-										      {% for cliente in results %}
-										        <li>{{ cliente|escape }}</li>
+										      {% for sede in results %}
+										        <li>{{ sede|escape }}</li>
 										      {% endfor %}
 										      </ul>
 									      </div>
 									    {% else %}
-									      <p>No hay clientes encontrados</p>
+									      <p>No hay sedes encontradas</p>
 									    {% endif %}
 									  {% endif %}
 

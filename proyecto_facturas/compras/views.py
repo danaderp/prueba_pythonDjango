@@ -1,11 +1,13 @@
 from django.forms import modelformset_factory
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.forms import modelform_factory
 from django.db.models import Q
-from .models import Clientes, Productos, Sedes
-from .forms import ClienteForm, ProductoForm, SedeForm
+from .models import Clientes, Productos, Sedes, Compras
+from .forms import ClienteForm, ProductoForm, SedeForm, CompraForm, CompraFormSet
+from django.forms import inlineformset_factory
+from django.core.exceptions import ValidationError 
 
 # Create your views here.
 
@@ -60,17 +62,36 @@ def buscar_cliente(request):
         "results": results,
         "query": query
     })
+    
+def buscar_factura(request):
+    query = request.GET.get('q', '')
+    if query:
+        qset = (
+            Q(documento__icontains=query) |
+            Q(nombres__icontains=query) 
+        )
+        results = Clientes.objects.filter(qset).distinct()
+    else:
+        results = []
+    return render_to_response('compras/buscar_factura.html', {
+        "results": results,
+        "query": query
+    }, context_instance = RequestContext(request))
 
-def manage_clientes(request):
-    ClienteFormSet = modelformset_factory(Clientes, fields =('documento','nombres','detalles'))
-    if request.method == 'POST':
-        formset = ClienteFormSet(request.POST, request.FILES)
+def manejar_factura(request):
+    cliente = Clientes.objects.get(pk=request.GET['cliente'])
+    #qset = Compras.objects.filter(id_cliente = request.GET['cliente'])
+    #qset = Compras.objects.all()
+    #formset = CompraFormSet(queryset = qset)
+    if request.method == "POST":
+        formset = CompraFormSet(request.POST, request.FILES, instance=cliente)
         if formset.is_valid():
             formset.save()
-            return HttpResponseRedirect('compras/index.html')
+        return HttpResponseRedirect('/compras/')
+
     else:
-        formset = ClienteFormSet()
-    return render(request, 'compras/manage_clientes.html', {'formset': formset})
+        formset = CompraFormSet(instance=cliente)
+    return render(request,'compras/manejar_factura.html', {'formset': formset, 'cliente':cliente})
 
 
 
@@ -111,5 +132,12 @@ def sedes(request):
  #   return HttpResponse("You're looking at Compras%s." % compra_id)
 
 
-def compras(request):
-    return render(request, 'compras/compras.html')
+def agregar_compra(request):
+    if request.method == 'POST':
+        form = CompraForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/compras/buscarfactura/')
+    else:
+        form = CompraForm()
+    return render(request, 'compras/agregar_compra.html', {'form': form})

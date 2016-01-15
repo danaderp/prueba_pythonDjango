@@ -175,12 +175,12 @@ class Sedes(models.Model):
         db_table = 'sedes'
 
 class Compras(models.Model):
-    id_cliente = models.ForeignKey(Clientes, models.DO_NOTHING, db_column='id_cliente', blank=True, null=True)
-    id_producto = models.ForeignKey('Productos', models.DO_NOTHING, db_column='id_producto', blank=True, null=True)
+    id_cliente = models.ForeignKey(Clientes, models.DO_NOTHING, db_column='id_cliente', blank=False, null=True)
+    id_producto = models.ForeignKey('Productos', models.DO_NOTHING, db_column='id_producto', blank=False, null=True)
     id_sede = models.ForeignKey('Sedes', models.DO_NOTHING, db_column='id_sede', blank=True, null=True)
-    precio = models.IntegerField(blank=True, null=True)
+    precio = models.IntegerField(blank=False, null=True)
     descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateTimeField(blank=True, null=True)
+    fecha = models.DateTimeField(blank=False, null=True)
 
     class Meta:
         managed = False

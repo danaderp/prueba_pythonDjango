@@ -26,7 +26,6 @@
 							<li>
 								<a href="#" class="icon fa-angle-down">CRUD</a>
 								<ul>
-									<li><a href="#">Clientes</a></li>
 									<li>
 										<a href="#">Productos</a>
 										<ul>
@@ -60,8 +59,8 @@
 					<h2>Sistema de Compras</h2>
 					<p>Elija alguna de las dos opciones.</p>
 					<ul class="actions">
-						<li><a href="{% url 'compras:compras' %}" class="button special">Comprar</a></li>
-						<li><a href="#" class="button">Consultar Factura</a></li>
+						<li><a href="{% url 'compras:agregar_compras' %}" class="button special">Comprar</a></li>
+						<li><a href="{% url 'compras:buscar_factura' %}" class="button">Consultar Factura</a></li>
 					</ul>
 				</section>
 

@@ -57,8 +57,8 @@
 			<!-- Main -->
 				<section id="main" class="container">
 					<header>
-						<h2>Buscar Producto</h2>
-						<p>Por favor busque su producto por el nombre o la descripción.</p>
+						<h2>Buscar Factura</h2>
+						<p>Por favor busque su factura por el nombre o el documento de identidad del cliente.</p>
 					</header>
 					<div class="row">
 						<div class="12u">
@@ -93,7 +93,7 @@
 
 							<!-- Form -->
 								<section class="box">
-									<h3>Mis Productos (búsqueda)</h3>								
+									<h3>Mis Clientes (búsqueda)</h3>								
 									<hr />
 									<form action="." method="GET">
 									<div class="row uniform 50%">
@@ -107,20 +107,29 @@
 								  	</div>
 								  	</form>
 									<hr />
+									
+									<form action="{% url 'compras:factura' %}" method="get">
+									  {% csrf_token %}
 									  {% if query %}
 									    <h3>Resultados para"{{ query|escape }}":</h3>
 									    {% if results %}
 									      <div class="6u 12u(mobilep)">
-										      <ul>
-										      {% for producto in results %}
-										        <li>{{ producto|escape }}</li>
+										    
+										      {% for cliente in results %}
+										          <input type="radio" name="cliente" id="cliente{{ forloop.counter }}" value="{{ cliente.id }}" />
+					
+										          <label for="cliente{{ forloop.counter }}">{{ cliente|escape }}</label><br />
 										      {% endfor %}
-										      </ul>
+										      
+										  <div class="3u 12u(mobilep)">
+										    	<input type="submit" value="Submit">
+										  </div>
 									      </div>
 									    {% else %}
-									      <p>No hay productos encontrados</p>
+									      <p>No hay clientes encontrados</p>
 									    {% endif %}
 									  {% endif %}
+								    </form>
 
 								</section>
 						</div>
