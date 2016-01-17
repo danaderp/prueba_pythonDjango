@@ -57,8 +57,8 @@
 			<!-- Main -->
 				<section id="main" class="container">
 					<header>
-						<h2>Consultar Factura</h2>
-						<p> Consulte la factura por cliente.</p>
+						<h2>Buscar Factura</h2>
+						<p>Por favor busque su factura por el nombre o el documento de identidad del cliente.</p>
 					</header>
 					<div class="row">
 						<div class="12u">
@@ -93,51 +93,44 @@
 
 							<!-- Form -->
 								<section class="box">
-									<h2>Factura para el cliente: ({{cliente.nombres}})</h2>	
-									<h3>Documento: {{cliente.documento}} </h3>							
+									<h3>Mis Clientes (búsqueda)</h3>								
 									<hr />
-									<form action="." method="POST">
-									{% csrf_token %}
-									<div class="table-wrapper">
-										<form method="post" action="">
-										 	<table>
-										 		<thead>
-											 		<tr>
-														<th>Id Productos</th>
-														<th>Productos</th>
-														<th>Sede</th>
-														<th>Precio</th>
-													</tr>
-										 		</thead>
-										 		<tbody>
-										 	  
-										 			{{ formset.management_form }}
-												    {% for form in formset %}
-												    {{ form.id }}
-										 			<tr>
-										 			   <td></td>
-												       <td>{{ form.id_producto }}</td>
-												       <td>{{ form.id_sede }}</td>
-												       <td>{{ form.precio }}</td>
-												    
-											    	</tr>
-											    	{% endfor %}
-										 		</tbody>
-										 		
-										 		<tfoot>
-												<tr>
-													<td colspan="3"></td>
-													<td>Total precio: {{total}} </td>
-												</tr>
-												</tfoot>
-										 		
-									    	</table>
-										</form>
-									</div>
-								  	<div class="3u 12u(mobilep)">
-										<p><input type="submit" value="Submit"></p>
-								    </div>
+									<form action="." method="GET">
+									<div class="row uniform 50%">
+										
+										    <div class="9u 12u(mobilep)">
+										    	<input type="text" name="q" value="{{ query|escape }}">
+										    </div>
+										    <div class="3u 12u(mobilep)">
+										    	<input type="submit" value="Search">
+										    </div>
+								  	</div>
 								  	</form>
+									<hr />
+									
+									<form action="{% url 'compras:pdffactura' %}" method="get">
+									  {% csrf_token %}
+									  {% if query %}
+									    <h3>Resultados para"{{ query|escape }}":</h3>
+									    {% if results %}
+									      <div class="6u 12u(mobilep)">
+										    
+										      {% for cliente in results %}
+										          <input type="radio" name="cliente" id="cliente{{ forloop.counter }}" value="{{ cliente.id }}" />
+					
+										          <label for="cliente{{ forloop.counter }}">{{ cliente|escape }}</label><br />
+										      {% endfor %}
+										      
+										  <div class="3u 12u(mobilep)">
+										    	<input type="submit" value="PDF">
+										  </div>
+									      </div>
+									    {% else %}
+									      <p>No hay clientes encontrados</p>
+									    {% endif %}
+									  {% endif %}
+								    </form>
+
 								</section>
 						</div>
 					</div>

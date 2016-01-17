@@ -16,5 +16,7 @@ urlpatterns = [
     url(r'^agregarsedes/$', views.agregar_sede , name='agregar_sede'),
     url(r'^sedes/$', views.sedes , name='sedes'),
     url(r'^buscarfactura/$', views.buscar_factura, name='buscar_factura'),
+    url(r'^buscarfacturapdf/$', views.buscar_factura_pdf, name='buscar_factura_pdf'),
     url(r'^factura/$', views.manejar_factura, name='factura'),
+    url(r'^pdffactura/$', views.pdf_factura, name='pdffactura'),
 ]

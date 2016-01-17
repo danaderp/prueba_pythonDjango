@@ -151,13 +151,11 @@ class Log(models.Model):
 
 
 class Productos(models.Model):
+    id = models.IntegerField(primary_key = True)
     producto = models.CharField(max_length=40, blank=True, null=True)
     precio = models.IntegerField(blank=True, null=True)
     descripcion = models.TextField(blank=True, null=True)
     
-    def __str__(self):
-        return self.producto
-
     class Meta:
         managed = False
         db_table = 'productos'
