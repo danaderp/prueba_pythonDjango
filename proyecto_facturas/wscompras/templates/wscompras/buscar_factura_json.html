@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<!--
+	Alpha by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+{% load staticfiles %}
+<html>
+	<head>
+		<title>Elements - Alpha by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="{% static 'compras/assets/js/ie/html5shiv.js' %}></script><![endif]-->
+		<link rel="stylesheet" href="{% static 'compras/assets/css/main.css' %}" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'compras/assets/css/ie8.css' %}" /><![endif]-->
+	</head>
+	<body>
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header" class="alt">
+					<h1><a href="{% url 'compras:index' %}">Prueba Python</a> by David A. Nader</h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="{% url 'compras:index' %}">Home</a></li>
+							<li>
+								<a href="#" class="icon fa-angle-down">CRUD</a>
+								<ul>
+									<li>
+										<a href="#">Productos</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_producto' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_producto' %}">Agregar</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Sedes</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_sede' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_sede' %}">Agregar</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Clientes</a>
+										<ul>
+											<li><a href="{% url 'compras:buscar_cliente' %}">Buscar</a></li>
+											<li><a href="{% url 'compras:agregar_cliente' %}">Agregar</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li><a href="{% url 'admin:index' %}" class="button">Administacion</a></li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<section id="main" class="container">
+					<header>
+						<h2>Buscar Factura</h2>
+						<p>Por favor busque su factura por el nombre o el documento de identidad del cliente.</p>
+					</header>
+					<div class="row">
+						<div class="12u">
+
+							<!-- Text -->
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+
+							<!-- Lists -->
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+
+							<!-- Table -->
+	
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+
+							<!-- Buttons -->
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+
+							<!-- Form -->
+								<section class="box">
+									<h3>Mis Clientes (búsqueda)</h3>								
+									<hr />
+									<form action="." method="GET">
+									<div class="row uniform 50%">
+										
+										    <div class="9u 12u(mobilep)">
+										    	<input type="text" name="q" value="{{ query|escape }}">
+										    </div>
+										    <div class="3u 12u(mobilep)">
+										    	<input type="submit" value="Search">
+										    </div>
+								  	</div>
+								  	</form>
+									<hr />
+									
+									<form action="{% url 'wscompras:generar_json' %}" method="get">
+									  {% csrf_token %}
+									  {% if query %}
+									    <h3>Resultados para"{{ query|escape }}":</h3>
+									    {% if results %}
+									      <div class="6u 12u(mobilep)">
+										    
+										      {% for cliente in results %}
+										          <input type="radio" name="cliente" id="cliente{{ forloop.counter }}" value="{{ cliente.id }}" />
+					
+										          <label for="cliente{{ forloop.counter }}">{{ cliente|escape }}</label><br />
+										      {% endfor %}
+										      
+										  <div class="3u 12u(mobilep)">
+										    	<input type="submit" value="JSON">
+										  </div>
+									      </div>
+									    {% else %}
+									      <p>No hay clientes encontrados</p>
+									    {% endif %}
+									  {% endif %}
+								    </form>
+
+								</section>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+
+							<!-- Image -->
+
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon fa-dribbble"><span class="label">Dribbble</span></a></li>
+						<li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="{% static 'compras/assets/js/jquery.min.js' %}"></script>
+			<script src="{% static 'compras/assets/js/jquery.dropotron.min.js' %}"></script>
+			<script src="{% static 'compras/assets/js/jquery.scrollgress.min.js' %}"></script>
+			<script src="{% static 'compras/assets/js/skel.min.js' %}"></script>
+			<script src="{% static 'compras/assets/js/util.js' %}"></script>
+			<!--[if lte IE 8]><script src="{% static 'assets/js/ie/respond.min.js' %}"></script><![endif]-->
+			<script src="{% static 'compras/assets/js/main.js' %}"></script>
+
+	</body>
+</html>

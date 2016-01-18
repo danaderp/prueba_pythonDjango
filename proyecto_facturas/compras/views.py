@@ -1,21 +1,18 @@
-from django.forms import modelformset_factory
-from django.shortcuts import render, render_to_response, get_object_or_404, RequestContext
+from django.shortcuts import render, render_to_response, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
-from django.forms import modelform_factory
 from django.db.models import Q
 from .models import Clientes, Productos, Sedes, Compras
 from .forms import ClienteForm, ProductoForm, SedeForm, CompraForm, CompraFormSet
-import pdfkit
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, cm
 import datetime
 from django.db.models import Sum
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import Paragraph, Table, TableStyle
+
 
 # Create your views here.
 
@@ -250,5 +247,6 @@ def agregar_compra(request):
             form.save()
             return HttpResponseRedirect('/compras/buscarfactura/')
     else:
-        form = CompraForm()
+        data = {'fecha': datetime.datetime.now()}
+        form = CompraForm(data)
     return render(request, 'compras/agregar_compra.html', {'form': form})
