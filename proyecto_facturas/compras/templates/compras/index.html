@@ -84,48 +84,20 @@
 						</header>
 					</section>
 
-					<div class="row">
-						<div class="6u 12u(narrower)">
-
-							<section class="box special">
-								<span class="image featured"><img src="images/pic02.jpg" alt="" /></span>
-								<h3>Sed lorem adipiscing</h3>
-								<p>Integer volutpat ante et accumsan commophasellus sed aliquam feugiat lorem aliquet ut enim rutrum phasellus iaculis accumsan dolore magna aliquam veroeros.</p>
-								<ul class="actions">
-									<li><a href="#" class="button alt">Learn More</a></li>
-								</ul>
-							</section>
-
-						</div>
-						<div class="6u 12u(narrower)">
-
-							<section class="box special">
-								<span class="image featured"><img src="images/pic03.jpg" alt="" /></span>
-								<h3>Accumsan integer</h3>
-								<p>Integer volutpat ante et accumsan commophasellus sed aliquam feugiat lorem aliquet ut enim rutrum phasellus iaculis accumsan dolore magna aliquam veroeros.</p>
-								<ul class="actions">
-									<li><a href="#" class="button alt">Learn More</a></li>
-								</ul>
-							</section>
-
-						</div>
-					</div>
-
-				</section>
-
 			<!-- CTA -->
 				<section id="cta">
 
-					<h2>Sign up for beta access</h2>
-					<p>Blandit varius ut praesent nascetur eu penatibus nisi risus faucibus nunc.</p>
+					<h2>Enviar a un correo Reporte Semanal</h2>
+					<p>Por favor, ingrese correo electrónico para enviar reporte.</p>
 
-					<form>
+					<form action="{% url 'compras:mailfactura' %}" method="POST">
+					{% csrf_token %}
 						<div class="row uniform 50%">
 							<div class="8u 12u(mobilep)">
 								<input type="email" name="email" id="email" placeholder="Email Address" />
 							</div>
 							<div class="4u 12u(mobilep)">
-								<input type="submit" value="Sign Up" class="fit" />
+								<input type="submit" value="Suscribir" class="fit" />
 							</div>
 						</div>
 					</form>

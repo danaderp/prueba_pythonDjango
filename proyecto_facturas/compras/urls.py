@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^buscarfacturapdf/$', views.buscar_factura_pdf, name='buscar_factura_pdf'),
     url(r'^factura/$', views.manejar_factura, name='factura'),
     url(r'^pdffactura/$', views.pdf_factura, name='pdffactura'),
+    url(r'^mailfactura/$', views.pdf_reporte_semanal_view, name='mailfactura'),
 ]

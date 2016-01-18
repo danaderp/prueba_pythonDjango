@@ -7,11 +7,13 @@ from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, cm
 import datetime
-from django.db.models import Sum
+from django.db.models import Sum, Avg, Max, Min, Count
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import Paragraph, Table, TableStyle
+from django.core.mail import EmailMessage, send_mail
+from django.conf import settings
 
 
 # Create your views here.
@@ -221,6 +223,75 @@ def pdf_factura(request):
     response.write(pdf)
     return response
 
+def pdf_reporte_semanal(request):
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'atachment; filename=factura-report.pdf'
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    #Lógica de la factura
+    c.setLineWidth(.3)
+    c.setFont('Helvetica', 22)
+    c.drawString(30, 750, 'Reporte Semanal')
+    
+    c.setFont('Helvetica', 12)
+    c.drawString(30, 735, str(datetime.datetime.now()) )
+    
+    #Traer los precios de las compras
+    comprasByCliente = Compras.objects.all().exclude(
+                    precio = None).order_by('id_producto').values_list('id_producto',flat=True)
+    productosByCompras = Productos.objects.filter(id__in = list(comprasByCliente))
+    
+    promedioCompras = Compras.objects.all().aggregate(Avg('precio'))['precio__avg']
+    promedioProducto = productosByCompras.aggregate(Avg('precio'))['precio__avg']
+    
+    maximaCompras = Compras.objects.all().aggregate(Max('precio'))['precio__max']
+    maximaProducto = productosByCompras.aggregate(Max('precio'))['precio__max']
+    
+    minimaCompras = Compras.objects.all().aggregate(Min('precio'))['precio__min']
+    minimaProducto = productosByCompras.aggregate(Min('precio'))['precio__min']
+    
+    numeroCompras = Compras.objects.all().aggregate(Count('precio'))['precio__count']
+    
+    totalCompras = Compras.objects.all().aggregate(Sum('precio'))['precio__sum']
+    
+    c.setFont('Helvetica', 9)
+    c.drawString(30, 700, "Promedio Compras: " + str( promedioCompras ))
+    c.drawString(300, 700, "Promedio Productos: " + str( promedioProducto ))
+    c.drawString(30, 685, "Diferencia Promedio: " + str( promedioProducto -  promedioCompras ))
+    
+    c.drawString(30, 665, "Máxima Compras: " + str( maximaCompras ))
+    c.drawString(300, 665, "Máxima Productos: " + str( maximaProducto ))
+    c.drawString(30, 650, "Diferencia Máxima: " + str( maximaProducto -  maximaCompras ))
+    
+    c.drawString(30, 630, "Mínima Compras: " + str( minimaCompras ))
+    c.drawString(300, 630, "Mínima Productos: " + str( minimaProducto ))
+    c.drawString(30, 615, "Diferencia Mínima: " + str( minimaProducto -  minimaCompras ))
+    
+    c.drawString(30, 595, "Número de Compras: " + str( numeroCompras ))
+    
+    c.drawString(30, 575, "Total Ganancias: " + str( totalCompras ))
+    
+    c.drawString(30, 555, "Compras Promedio por Minuto: " + str( promedioProducto -  promedioCompras ))
+    
+    #Termina lógica de la factura
+    c.showPage()
+    c.save()
+    
+    pdf = buffer.getvalue()
+    buffer.close()
+    #response.write(pdf)
+    return pdf
+
+def pdf_reporte_semanal_view(request):
+    if request.method == "POST":
+        EmailMsg = EmailMessage('Prueba','Prueba de contenido',settings.EMAIL_HOST_USER,[request.POST['email']]
+                               ,headers={'Reply-To':request.POST['email']})
+        pdf = pdf_reporte_semanal(request)
+        EmailMsg.attach('reporte_semanal.pdf', pdf, 'application/pdf')
+        EmailMsg.send()
+        return HttpResponse("El pdf fue enviado al correo sugerido : " + request.POST['email'])
+    return render(request, 'compras/index.html')
+
 def buscar_producto(request):
     query = request.GET.get('q', '')
     if query:
@@ -274,3 +345,5 @@ def agregar_compra(request):
         data = {'fecha': datetime.datetime.now()}
         form = CompraForm(data)
     return render(request, 'compras/agregar_compra.html', {'form': form})
+
+
