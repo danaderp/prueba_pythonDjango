@@ -1,7 +1,7 @@
 from django.shortcuts import render, render_to_response, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
-from .models import Clientes, Productos, Sedes, Compras
+from .models import Clientes, Productos, Sedes, Compras, Log
 from .forms import ClienteForm, ProductoForm, SedeForm, CompraForm, CompraFormSet
 from io import BytesIO
 from reportlab.pdfgen import canvas
@@ -19,13 +19,16 @@ from reportlab.platypus import Paragraph, Table, TableStyle
 def index(request):
     #template = loader.get_template('compras/index.html')
     #return HttpResponse("Hola mundo, esta es la pagina de Compras.")
-     return render(request, 'compras/index.html')
+     actualizacion = Log.objects.all().order_by('fecha').reverse()[:6]
+     return render(request, 'compras/index.html', {'actualizacion':actualizacion})
 
 def agregar_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
             form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Cliente Agregado")
             return HttpResponseRedirect('/compras/buscarclientes/')
     else:
         form = ClienteForm()
@@ -38,6 +41,8 @@ def agregar_producto(request):
         form = ProductoForm(request.POST)
         if form.is_valid():
             form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Agregado")
             return HttpResponseRedirect('/compras/buscarproducto/')
     else:
         form = ProductoForm()
@@ -48,6 +53,8 @@ def agregar_sede(request):
         form = SedeForm(request.POST)
         if form.is_valid():
             form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Agregada")
             return HttpResponseRedirect('/compras/buscarsede/')
     else:
         form = SedeForm()
@@ -63,6 +70,9 @@ def buscar_cliente(request):
         results = Clientes.objects.filter(qset).distinct()
     else:
         results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Cliente Consultado")
+    
     return render_to_response('compras/buscar_cliente.html', {
         "results": results,
         "query": query
@@ -78,6 +88,8 @@ def buscar_factura(request):
         results = Clientes.objects.filter(qset).distinct()
     else:
         results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Factura Consultada")
     return render_to_response('compras/buscar_factura.html', {
         "results": results,
         "query": query
@@ -93,6 +105,9 @@ def buscar_factura_pdf(request):
         results = Clientes.objects.filter(qset).distinct()
     else:
         results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Factura Consultada PDF")
+    
     return render_to_response('compras/buscar_factura_pdf.html', {
         "results": results,
         "query": query
@@ -105,6 +120,8 @@ def manejar_factura(request):
         formset = CompraFormSet(request.POST, request.FILES, instance=cliente)
         if formset.is_valid():
             formset.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Factura Actualizada")
         return HttpResponseRedirect('/compras/')
 
     else:
@@ -119,7 +136,8 @@ def manejar_factura(request):
                     precio = None).filter(id_producto = p).update(precio = p.precio)
                     
         total = Compras.objects.filter(id_cliente = request.GET['cliente']).aggregate(Sum('precio'))
-        
+        #Log
+        Log.objects.create(fecha = datetime.datetime.now(), descripcion="Compra Consultada y Actualizada")
         
     return render(request,'compras/manejar_factura.html', {'formset': formset, 
                                                            'cliente':cliente,
@@ -213,6 +231,8 @@ def buscar_producto(request):
         results = Productos.objects.filter(qset).distinct()
     else:
         results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Consultado")
     return render_to_response('compras/buscar_producto.html', {
         "results": results,
         "query": query
@@ -228,6 +248,8 @@ def buscar_sede(request):
         results = Sedes.objects.filter(qset).distinct()
     else:
         results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Consultada")
     return render_to_response('compras/buscar_sede.html', {
         "results": results,
         "query": query
@@ -245,6 +267,8 @@ def agregar_compra(request):
         form = CompraForm(request.POST)
         if form.is_valid():
             form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Compra Agregada")
             return HttpResponseRedirect('/compras/buscarfactura/')
     else:
         data = {'fecha': datetime.datetime.now()}
