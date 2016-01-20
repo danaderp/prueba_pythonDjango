@@ -1,0 +1,5 @@
+<form action="" method="post">{% csrf_token %}
+    <p>¿Está seguro que desea eliminar "{{ object }}"?, recuerde que registros asociados
+    a compras no se pueden eliminar sin antes eliminar la compra.</p>
+    <input type="submit" value="Confirm" />
+</form>

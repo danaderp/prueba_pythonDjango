@@ -15,7 +15,7 @@ from reportlab.platypus import Paragraph, Table, TableStyle
 from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
 from datetime import timedelta
-from django.views.generic.edit import UpdateView, FormView
+from django.views.generic.edit import UpdateView, DeleteView
 from django.core.urlresolvers import reverse
 
 # Create your views here.
@@ -25,24 +25,54 @@ class ProductoActualizar(UpdateView):
     fields = ['producto', 'precio', 'descripcion']
     template_name_suffix = '_actualizar_form'
     success_url = '/compras/buscarproducto/'
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Actualizado")
     def get_absolute_url(self):
         return reverse('actualizar_producto', kwargs={'pk': self.pk})
+    
+class ProductoBorrar(DeleteView):
+    model = Productos
+    success_url = '/compras/buscarproducto/'
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Eliminado")
+    def get_absolute_url(self): 
+        return reverse('productos_confirm_delete', kwargs={'pk': self.pk})
 
 class SedeActualizar(UpdateView):
     model = Sedes
     fields = ['sede', 'direccion']
     template_name_suffix = '_actualizar_form'
     success_url = '/compras/buscarsede/'
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Actualizada")
     def get_absolute_url(self):
         return reverse('actualizar_sede', kwargs={'pk': self.pk})
+    
+class SedeBorrar(DeleteView):
+    model = Sedes
+    success_url = '/compras/buscarsede/'
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Eliminada")
+    def get_absolute_url(self): 
+        return reverse('sedes_confirm_delete', kwargs={'pk': self.pk})
     
 class ClienteActualizar(UpdateView):
     model = Clientes
     fields = ['documento', 'nombres','detalles']
     template_name_suffix = '_actualizar_form'
     success_url = '/compras/buscarclientes/'
-    def get_absolute_url(self):
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Cliente Actualizado")
+    def get_absolute_url(self): 
         return reverse('actualizar_cliente', kwargs={'pk': self.pk})
+    
+class ClienteBorrar(DeleteView):
+    model = Clientes
+    success_url = '/compras/buscarclientes/'
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Cliente Eliminado")
+    def get_absolute_url(self): 
+        return reverse('clientes_confirm_delete', kwargs={'pk': self.pk})
 
 def index(request):
     #template = loader.get_template('compras/index.html')

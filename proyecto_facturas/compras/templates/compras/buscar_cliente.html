@@ -58,7 +58,7 @@
 				<section id="main" class="container">
 					<header>
 						<h2>Buscar Clientes</h2>
-						<p>Por favor busque su cliente por el nombre o el documento de identidad.</p>
+						<p>Por favor búsque su cliente por el nombre o el documento de identidad.</p>
 					</header>
 					<div class="row">
 						<div class="12u">
@@ -107,6 +107,15 @@
 								  	</div>
 								  	</form>
 									<hr />
+								</section>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="6u 12u(narrower)">
+
+							<section class="box special">	
+								 <h3>Registros para Actualizar</h3>				
 									  {% if query %}
 									    <h3>Resultados para"{{ query|escape }}":</h3>
 									    {% if results %}
@@ -124,10 +133,35 @@
 									      <p>No hay clientes encontrados</p>
 									    {% endif %}
 									  {% endif %}
-
-								</section>
+							</section>
 						</div>
+						<div class="6u 12u(narrower)">
+
+							<section class="box special">
+								<h3>Registros para Eliminar</h3>				
+									  {% if query %}
+									    <h3>Resultados para"{{ query|escape }}":</h3>
+									    {% if results %}
+									      <div class="6u 12u(mobilep)">
+										      <ul>
+										      {% for cliente in results %}
+										        <li>
+										        	<a href = "{% url 'compras:borrar_cliente' pk=cliente.id %}">
+										        		{{ cliente|escape }}</a>
+										        </li>
+										      {% endfor %}
+										      </ul>
+									      </div>
+									    {% else %}
+									      <p>No hay clientes encontrados</p>
+									    {% endif %}
+									  {% endif %}
+							</section>
+
+						</div>
+						
 					</div>
+					
 					<div class="row">
 						<div class="12u">
 
