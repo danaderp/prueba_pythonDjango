@@ -23,32 +23,7 @@
 					<nav id="nav">
 						<ul>
 							<li><a href="{% url 'compras:index' %}">Home</a></li>
-							<li>
-								<a href="#" class="icon fa-angle-down">CRUD</a>
-								<ul>
-									<li>
-										<a href="#">Productos</a>
-										<ul>
-											<li><a href="{% url 'compras:buscar_producto' %}">Buscar</a></li>
-											<li><a href="{% url 'compras:agregar_producto' %}">Agregar</a></li>
-										</ul>
-									</li>
-									<li>
-										<a href="#">Sedes</a>
-										<ul>
-											<li><a href="{% url 'compras:buscar_sede' %}">Buscar</a></li>
-											<li><a href="{% url 'compras:agregar_sede' %}">Agregar</a></li>
-										</ul>
-									</li>
-									<li>
-										<a href="#">Clientes</a>
-										<ul>
-											<li><a href="{% url 'compras:buscar_cliente' %}">Buscar</a></li>
-											<li><a href="{% url 'compras:agregar_cliente' %}">Agregar</a></li>
-										</ul>
-									</li>
-								</ul>
-							</li>
+							
 							<li><a href="{% url 'admin:index' %}" class="button">Administacion</a></li>
 						</ul>
 					</nav>
@@ -58,7 +33,7 @@
 				<section id="main" class="container">
 					<header>
 						<h2>Agregar Sede</h2>
-						<p>Por favor agregue su sede en los correspondietes campos.</p>
+						<p>Por favor genere su sede en los correspondietes campos.</p>
 					</header>
 					<div class="row">
 						<div class="12u">
