@@ -113,7 +113,10 @@
 									      <div class="6u 12u(mobilep)">
 										      <ul>
 										      {% for cliente in results %}
-										        <li>{{ cliente|escape }}</li>
+										        <li>
+										        	<a href = "{% url 'compras:actualizar_cliente' pk=cliente.id %}">
+										        		{{ cliente|escape }}</a>
+										        </li>
 										      {% endfor %}
 										      </ul>
 									      </div>

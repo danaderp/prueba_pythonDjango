@@ -107,20 +107,29 @@
 								  	</div>
 								  	</form>
 									<hr />
+									  <form action="" method="get">
 									  {% if query %}
 									    <h3>Resultados para"{{ query|escape }}":</h3>
 									    {% if results %}
 									      <div class="6u 12u(mobilep)">
-										      <ul>
-										      {% for producto in results %}
-										        <li>{{ producto|escape }}</li>
-										      {% endfor %}
-										      </ul>
+										    	<ul>
+										      	{% for producto in results %}
+												  <li>
+											          <a href = "{% url 'compras:actualizar_producto' pk=producto.id %}">
+											          {{ producto|escape }}
+											          </a>
+										          </li>
+										     	{% endfor %}
+										      	</ul>
+										  <div class="3u 12u(mobilep)">
+										    	<input type="submit" value="Submit">
+										  </div>
 									      </div>
 									    {% else %}
 									      <p>No hay productos encontrados</p>
 									    {% endif %}
 									  {% endif %}
+								    </form>
 
 								</section>
 						</div>

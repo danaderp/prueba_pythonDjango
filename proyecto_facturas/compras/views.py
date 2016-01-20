@@ -2,7 +2,7 @@ from django.shortcuts import render, render_to_response, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q, F
 from .models import Clientes, Productos, Sedes, Compras, Log
-from .forms import ClienteForm, ProductoForm, SedeForm, CompraForm, CompraFormSet
+from .forms import ClienteForm, ProductoForm, SedeForm, CompraForm, CompraFormSet, ProductoFormSet
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, cm
@@ -15,53 +15,40 @@ from reportlab.platypus import Paragraph, Table, TableStyle
 from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
 from datetime import timedelta
-
+from django.views.generic.edit import UpdateView, FormView
+from django.core.urlresolvers import reverse
 
 # Create your views here.
+
+class ProductoActualizar(UpdateView):
+    model = Productos
+    fields = ['producto', 'precio', 'descripcion']
+    template_name_suffix = '_actualizar_form'
+    success_url = '/compras/buscarproducto/'
+    def get_absolute_url(self):
+        return reverse('actualizar_producto', kwargs={'pk': self.pk})
+
+class SedeActualizar(UpdateView):
+    model = Sedes
+    fields = ['sede', 'direccion']
+    template_name_suffix = '_actualizar_form'
+    success_url = '/compras/buscarsede/'
+    def get_absolute_url(self):
+        return reverse('actualizar_sede', kwargs={'pk': self.pk})
+    
+class ClienteActualizar(UpdateView):
+    model = Clientes
+    fields = ['documento', 'nombres','detalles']
+    template_name_suffix = '_actualizar_form'
+    success_url = '/compras/buscarclientes/'
+    def get_absolute_url(self):
+        return reverse('actualizar_cliente', kwargs={'pk': self.pk})
 
 def index(request):
     #template = loader.get_template('compras/index.html')
     #return HttpResponse("Hola mundo, esta es la pagina de Compras.")
      actualizacion = Log.objects.all().order_by('fecha').reverse()[:6]
      return render(request, 'compras/index.html', {'actualizacion':actualizacion})
-
-def agregar_cliente(request):
-    if request.method == 'POST':
-        form = ClienteForm(request.POST)
-        if form.is_valid():
-            form.save()
-            #Log
-            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Cliente Agregado")
-            return HttpResponseRedirect('/compras/buscarclientes/')
-    else:
-        form = ClienteForm()
-    return render(request,'compras/agregar_cliente.html', {'form': form})
-    #output = ', '.join([q.nombres for q in latest_clientes_list])
-    #return HttpResponse(output)
-
-def agregar_producto(request):
-    if request.method == 'POST':
-        form = ProductoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            #Log
-            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Agregado")
-            return HttpResponseRedirect('/compras/buscarproducto/')
-    else:
-        form = ProductoForm()
-    return render(request,'compras/agregar_producto.html', {'form': form})
-
-def agregar_sede(request):
-    if request.method == 'POST':
-        form = SedeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            #Log
-            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Agregada")
-            return HttpResponseRedirect('/compras/buscarsede/')
-    else:
-        form = SedeForm()
-    return render(request,'compras/agregar_sede.html', {'form': form})
 
 def buscar_cliente(request):
     query = request.GET.get('q', '')
@@ -80,7 +67,79 @@ def buscar_cliente(request):
         "results": results,
         "query": query
     })
-    
+
+def agregar_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Cliente Agregado")
+            return HttpResponseRedirect('/compras/buscarclientes/')
+    else:
+        form = ClienteForm()
+    return render(request,'compras/agregar_cliente.html', {'form': form})
+    #output = ', '.join([q.nombres for q in latest_clientes_list])
+    #return HttpResponse(output)
+
+def buscar_producto(request):
+    query = request.GET.get('q', '')
+    if query:
+        qset = (
+            Q(producto__icontains=query) |
+            Q(descripcion__icontains=query) 
+        )
+        results = Productos.objects.filter(qset).distinct()
+    else:
+        results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Consultado")
+    return render_to_response('compras/buscar_producto.html', {
+        "results": results,
+        "query": query
+    })
+
+def agregar_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Agregado")
+            return HttpResponseRedirect('/compras/buscarproducto/')
+    else:
+        form = ProductoForm()
+    return render(request,'compras/agregar_producto.html', {'form': form})
+
+def buscar_sede(request):
+    query = request.GET.get('q', '')
+    if query:
+        qset = (
+            Q(sede__icontains=query) |
+            Q(direccion__icontains=query) 
+        )
+        results = Sedes.objects.filter(qset).distinct()
+    else:
+        results = []
+    #Log
+    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Consultada")
+    return render_to_response('compras/buscar_sede.html', {
+        "results": results,
+        "query": query
+    })
+
+def agregar_sede(request):
+    if request.method == 'POST':
+        form = SedeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            #Log
+            Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Agregada")
+            return HttpResponseRedirect('/compras/buscarsede/')
+    else:
+        form = SedeForm()
+    return render(request,'compras/agregar_sede.html', {'form': form})
+
 def buscar_factura(request):
     query = request.GET.get('q', '')
     if query:
@@ -115,7 +174,7 @@ def buscar_factura_pdf(request):
         "results": results,
         "query": query
     }, context_instance = RequestContext(request))
-
+    
 def manejar_factura(request):
     cliente = Clientes.objects.get(pk=request.GET['cliente'])
     
@@ -324,47 +383,6 @@ def pdf_reporte_semanal_view(request):
         EmailMsg.send()
         return HttpResponse("El pdf fue enviado al correo sugerido : " + request.POST['email'])
     return render(request, 'compras/index.html')
-
-def buscar_producto(request):
-    query = request.GET.get('q', '')
-    if query:
-        qset = (
-            Q(producto__icontains=query) |
-            Q(descripcion__icontains=query) 
-        )
-        results = Productos.objects.filter(qset).distinct()
-    else:
-        results = []
-    #Log
-    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Producto Consultado")
-    return render_to_response('compras/buscar_producto.html', {
-        "results": results,
-        "query": query
-    })
-
-def buscar_sede(request):
-    query = request.GET.get('q', '')
-    if query:
-        qset = (
-            Q(sede__icontains=query) |
-            Q(direccion__icontains=query) 
-        )
-        results = Sedes.objects.filter(qset).distinct()
-    else:
-        results = []
-    #Log
-    Log.objects.create(fecha = datetime.datetime.now(), descripcion="Sede Consultada")
-    return render_to_response('compras/buscar_sede.html', {
-        "results": results,
-        "query": query
-    })
-
-def sedes(request):
-    return HttpResponse("You're looking at Sedes%s." )
-
-#def compras(request, compra_id):
- #   return HttpResponse("You're looking at Compras%s." % compra_id)
-
 
 def agregar_compra(request):
     if request.method == 'POST':

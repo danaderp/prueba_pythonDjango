@@ -13,3 +13,4 @@ CompraForm = modelform_factory(Compras, fields=("id_cliente", "id_producto", "id
                                         })
 
 CompraFormSet = inlineformset_factory(Clientes, Compras, form= CompraForm, fk_name='id_cliente', extra=0)
+ProductoFormSet = modelformset_factory(Compras, form= CompraForm)
